@@ -1,0 +1,19 @@
+# === 診断ツール由来の未使用ファイル（ヨガ版bridal-appでは未import） ===
+app.js
+analyzer.js
+courses.js
+data.js
+diagnosis.js
+prescription-matrix.js
+program.js
+storage.js
+server.js
+review.html
+_check.mjs
+
+# === 未使用画像（診断ツールの質問画像・骨格タイプ画像） ===
+assets/q-q*.png
+assets/type-*.png
+
+# === OS/エディタ ===
+.DS_Store

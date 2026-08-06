@@ -1,0 +1,168 @@
+/* ================================================================
+   Memoro Bridal — 30日ブライダルボディメイク 専用スタイル
+   既存 redesign.css の :root 変数（--lx-*）を継承して使用
+   ================================================================ */
+
+/* ---- 問診パネル ---- */
+.bm-panel{
+  max-width:720px; margin:0 auto; position:relative;
+  background:var(--lx-paper); border:1px solid var(--lx-line); border-radius:10px;
+  padding:40px 36px; box-shadow:0 14px 38px rgba(71,63,54,.06);
+}
+.bm-q{ border:none; border-top:1px solid var(--lx-line); padding:22px 0 6px; margin:0; }
+.bm-q:first-of-type{ border-top:none; padding-top:4px; }
+.bm-q legend{ font-family:var(--lx-serif); font-weight:700; font-size:16px; color:var(--lx-ink); padding:0; line-height:1.6; }
+.bm-multi{ font-family:var(--lx-sans); font-size:11px; color:#fff; background:var(--lx-rose); border-radius:999px; padding:2px 9px; margin-left:6px; vertical-align:middle; font-weight:500; }
+.bm-q-hint{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-muted); margin:5px 0 13px; }
+.bm-opts{ display:flex; flex-wrap:wrap; gap:10px; }
+.bm-opt{ position:relative; }
+.bm-opt input{ position:absolute; opacity:0; width:0; height:0; }
+.bm-opt span{
+  display:inline-block; padding:10px 18px; border:1px solid var(--lx-line); border-radius:999px;
+  font-family:var(--lx-sans); font-size:14px; color:var(--lx-ink-2); cursor:pointer; transition:.2s; background:#fff;
+}
+.bm-opt span:hover{ border-color:var(--lx-rose); }
+.bm-opt input:checked + span{ background:var(--lx-rose); color:#fff; border-color:var(--lx-rose); box-shadow:0 4px 12px rgba(201,138,124,.28); }
+.bm-opt input:focus-visible + span{ outline:2px solid var(--lx-rose); outline-offset:2px; }
+
+/* ---- 進捗 ---- */
+.bm-progress{ height:6px; background:var(--lx-cream-2); border-radius:999px; margin:28px 0 8px; overflow:hidden; }
+#bm-progress-bar{ height:100%; width:0; background:linear-gradient(90deg,var(--lx-rose),var(--lx-terra)); transition:.3s ease; }
+.bm-progress-text{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-muted); text-align:center; }
+.bm-progress-text.bm-ready{ color:var(--lx-sage-deep); font-weight:600; }
+
+/* ---- 結果ラッパ ---- */
+.lx-section-wrap{ max-width:1000px; margin:0 auto; padding:24px 40px 80px; }
+
+/* ---- Phase カード ---- */
+.bm-phases{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin:6px 0 26px; }
+.bm-phase{ background:var(--lx-paper); border:1px solid var(--lx-line); border-radius:10px; padding:22px 20px; text-align:center; }
+.bm-phase-en{ font-family:var(--lx-en); font-size:11px; letter-spacing:.2em; color:var(--lx-rose); }
+.bm-phase h4{ font-family:var(--lx-serif); font-weight:700; font-size:19px; color:var(--lx-ink); margin:6px 0 8px; }
+.bm-phase h4 small{ display:block; font-family:var(--lx-en); font-size:11px; color:var(--lx-muted); font-weight:400; margin-top:3px; letter-spacing:.04em; }
+.bm-phase p{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-ink-2); margin:0; line-height:1.85; }
+.bm-phase-1{ border-top:3px solid #EAC9B9; }
+.bm-phase-2{ border-top:3px solid var(--lx-rose); }
+.bm-phase-3{ border-top:3px solid var(--lx-terra); }
+
+/* ---- ブロック ---- */
+.bm-block{ background:var(--lx-paper); border:1px solid var(--lx-line); border-radius:10px; padding:28px 26px; margin-bottom:22px; box-shadow:0 10px 30px rgba(71,63,54,.05); }
+.bm-block > h4{ font-family:var(--lx-serif); font-weight:700; font-size:18px; color:var(--lx-ink); margin:0 0 6px; }
+.bm-cal-help{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-muted); margin:0 0 18px; line-height:1.7; }
+
+/* ---- 30日カレンダー ---- */
+.bm-cal{ display:grid; grid-template-columns:repeat(7,1fr); gap:8px; }
+.bm-cell{
+  aspect-ratio:1/1; border:1px solid var(--lx-line); border-radius:8px; background:#fff; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:2px; transition:.15s ease;
+}
+.bm-cell:hover{ transform:translateY(-2px); box-shadow:0 8px 18px rgba(71,63,54,.12); border-color:var(--lx-rose); }
+.bm-cell-day{ font-family:var(--lx-display); font-size:21px; font-weight:600; color:var(--lx-ink); line-height:1; }
+.bm-cell-label{ font-family:var(--lx-sans); font-size:9.5px; color:var(--lx-muted); }
+.bm-phase-b1{ background:#FDF7F3; }
+.bm-phase-b2{ background:#FBEEE9; }
+.bm-phase-b3{ background:#F8E7E0; }
+.bm-cell.bm-rest{ background:repeating-linear-gradient(45deg,#F3EFE7,#F3EFE7 6px,#EBE4D7 6px,#EBE4D7 12px); }
+.bm-cell.bm-rest .bm-cell-label{ color:var(--lx-sage-deep); }
+.bm-cell.bm-taper{ box-shadow:inset 0 0 0 2px var(--lx-blush); }
+.bm-cell.bm-done{ position:relative; }
+.bm-cell.bm-done::after{ content:'✓'; position:absolute; top:3px; right:6px; color:var(--lx-sage-deep); font-weight:700; font-size:12px; }
+.bm-cell.bm-done .bm-cell-day{ color:var(--lx-sage-deep); }
+
+/* ---- 注意・安全 ---- */
+.bm-notice{ background:var(--lx-blush-soft); border:1px solid var(--lx-blush); border-radius:8px; padding:16px 20px; font-family:var(--lx-sans); font-size:13px; color:var(--lx-rose-deep); line-height:1.85; margin-bottom:20px; }
+.bm-safety{ font-family:var(--lx-sans); font-size:13px; color:var(--lx-ink-2); line-height:1.95; margin:0; padding-left:1.2em; }
+.bm-actions{ text-align:center; margin:26px 0 6px; }
+
+/* ---- 日別モーダル ---- */
+.bm-modal{ position:fixed; inset:0; background:rgba(71,63,54,.55); z-index:100; display:flex; align-items:flex-start; justify-content:center; padding:30px 16px; overflow-y:auto; }
+.bm-modal-inner{ background:var(--lx-cream); border-radius:14px; max-width:640px; width:100%; padding:0 0 30px; position:relative; box-shadow:0 30px 70px rgba(0,0,0,.32); }
+.bm-modal-close{ position:absolute; top:12px; right:14px; z-index:3; width:34px; height:34px; border-radius:50%; border:none; background:rgba(255,255,255,.92); font-size:20px; line-height:1; color:var(--lx-ink); cursor:pointer; box-shadow:0 3px 10px rgba(0,0,0,.12); }
+.bm-day-head{ padding:30px 30px 22px; border-radius:14px 14px 0 0; }
+.bm-day-phase{ font-family:var(--lx-en); font-size:11px; letter-spacing:.16em; color:var(--lx-rose); }
+.bm-day-head h3{ font-family:var(--lx-serif); font-weight:700; font-size:26px; color:var(--lx-ink); margin:4px 0 10px; }
+.bm-day-msg{ font-family:var(--lx-serif); font-size:14px; color:var(--lx-ink-2); margin:0; line-height:1.85; }
+.bm-day-sec{ padding:20px 30px 4px; }
+.bm-day-sec > h4{ font-family:var(--lx-serif); font-weight:700; font-size:17px; color:var(--lx-ink); margin:0 0 14px; border-left:3px solid var(--lx-rose); padding-left:11px; }
+.bm-day-sec > h4 small{ font-family:var(--lx-sans); font-size:11px; color:var(--lx-muted); font-weight:400; margin-left:6px; }
+
+/* ---- 種目カード ---- */
+.bm-ex{ display:flex; gap:14px; background:#fff; border:1px solid var(--lx-line); border-radius:10px; padding:14px; margin-bottom:12px; }
+.bm-ex-illust{ flex:0 0 92px; width:92px; height:92px; background:var(--lx-cream-2); border-radius:8px; overflow:hidden; }
+.bm-ex-illust svg{ width:100%; height:100%; display:block; }
+.bm-ex-body{ flex:1; min-width:0; }
+.bm-ex-head{ display:flex; flex-wrap:wrap; justify-content:space-between; align-items:baseline; gap:4px 8px; }
+.bm-ex-head h5{ font-family:var(--lx-serif); font-weight:700; font-size:15px; color:var(--lx-ink); margin:0; flex:1 1 auto; min-width:0; line-height:1.4; }
+.bm-ex-presc{ font-family:var(--lx-sans); font-size:11.5px; color:var(--lx-terra); white-space:nowrap; font-weight:600; flex:0 0 auto; }
+.bm-ex-purpose{ font-family:var(--lx-sans); font-size:12px; color:var(--lx-muted); margin:4px 0 6px; line-height:1.6; }
+.bm-ex-how{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-ink-2); margin:0; padding-left:1.3em; line-height:1.75; }
+.bm-ex-breath{ font-family:var(--lx-sans); font-size:12px; color:#4a7c9e; margin:7px 0 0; line-height:1.6; }
+.bm-ex-modify{ font-family:var(--lx-sans); font-size:12px; color:var(--lx-ink-2); background:var(--lx-cream-2); border-radius:7px; padding:7px 10px; margin:7px 0 0; line-height:1.6; }
+.bm-dx-banner{ margin-top:16px; padding:12px 16px; background:var(--lx-cream-2); border:1px solid #d9c39a; border-radius:10px; text-align:left; }
+.bm-dx-banner b{ display:block; font-family:var(--lx-sans); font-size:13px; color:var(--lx-terra); margin-bottom:3px; }
+.bm-dx-banner span{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-ink-2); line-height:1.6; }
+
+/* 変化の記録（Before/After）*/
+.bm-record-slots{ display:flex; gap:8px; flex-wrap:wrap; margin:12px 0 16px; }
+.bm-rec-slot{ flex:1 1 auto; min-width:70px; padding:10px 8px; border:1px solid var(--lx-line); border-radius:8px; background:#fff; font-family:var(--lx-sans); font-size:13px; font-weight:600; color:var(--lx-ink-2); cursor:pointer; transition:.15s; }
+.bm-rec-slot:hover{ border-color:var(--lx-terra); color:var(--lx-terra); }
+.bm-rec-empty{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-muted); text-align:center; padding:16px; background:var(--lx-cream-2); border-radius:8px; }
+.bm-rec-form{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+.bm-rec-form label{ display:flex; flex-direction:column; font-family:var(--lx-sans); font-size:12px; color:var(--lx-muted); gap:4px; }
+.bm-rec-form label span{ font-size:10.5px; opacity:.8; }
+.bm-rec-form input{ padding:10px; border:1px solid var(--lx-line); border-radius:8px; font-size:15px; font-family:var(--lx-sans); width:100%; box-sizing:border-box; }
+.bm-rec-photo{ display:block; font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-muted); margin:8px 0; }
+.bm-rec-photo span{ display:block; margin-bottom:6px; }
+#rec-photo-preview img{ max-width:180px; border-radius:8px; margin:8px 0; }
+.bm-rec-save{ width:100%; margin-top:12px; }
+.bm-rec-compare{ margin-top:14px; }
+.bm-rec-table{ width:100%; border-collapse:collapse; font-family:var(--lx-sans); font-size:13px; }
+.bm-rec-table th,.bm-rec-table td{ padding:8px 6px; text-align:center; border-bottom:1px solid var(--lx-line); }
+.bm-rec-table th{ font-size:11px; color:var(--lx-muted); font-weight:600; }
+.bm-rec-table td:first-child,.bm-rec-table th:first-child{ text-align:left; }
+.bm-rec-table .bm-down{ color:#3a9d6e; font-weight:700; }
+.bm-rec-table .bm-up{ color:#c0714e; font-weight:700; }
+.bm-rec-photos{ display:flex; gap:12px; margin-top:14px; }
+.bm-rec-photos figure{ flex:1; margin:0; text-align:center; }
+.bm-rec-photos img{ width:100%; border-radius:8px; }
+.bm-rec-photos figcaption{ font-family:var(--lx-sans); font-size:11px; color:var(--lx-muted); margin-top:4px; }
+
+/* 継続ダッシュボード（挙式カウントダウン＋進捗）*/
+.bm-dashboard{ margin:20px 0; }
+.bm-dash-cd{ background:linear-gradient(135deg,#c0714e,#a85c3d); color:#fff; border-radius:14px; padding:20px; text-align:center; margin-bottom:12px; }
+.bm-dash-cdnum{ font-family:var(--lx-serif); font-size:16px; }
+.bm-dash-cdnum b{ font-size:40px; margin:0 5px; }
+.bm-dash-cdlabel{ font-size:12px; opacity:.92; margin-top:2px; }
+.bm-dash-edit{ margin-top:12px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.45); color:#fff; font-size:11px; padding:5px 14px; border-radius:999px; cursor:pointer; }
+.bm-dash-cdset label{ font-size:13px; display:block; line-height:1.6; }
+.bm-dash-cdset input{ display:block; margin:12px auto 0; padding:9px 12px; border-radius:8px; border:none; font-size:15px; }
+.bm-dash-stats{ display:flex; gap:10px; }
+.bm-stat{ flex:1; background:#fff; border:1px solid var(--lx-line); border-radius:12px; padding:14px 8px; text-align:center; }
+.bm-stat-num{ display:block; font-family:var(--lx-serif); font-size:26px; font-weight:700; color:var(--lx-ink); line-height:1.1; }
+.bm-stat-num small{ font-size:13px; color:var(--lx-muted); font-weight:400; }
+.bm-stat-label{ display:block; font-size:11px; color:var(--lx-muted); margin-top:5px; }
+
+/* エビデンス・バッジ（研究データ表示）*/
+.bm-ex-evidence{ font-family:var(--lx-sans); font-size:11.5px; color:#2f7d57; background:#eef7f1; border-left:3px solid #3a9d6e; padding:7px 10px; border-radius:4px; margin:8px 0; line-height:1.5; }
+.bm-ex-evidence small{ display:block; color:var(--lx-muted); font-size:10px; margin-top:3px; font-weight:400; }
+.bm-cue{ font-family:var(--lx-sans); font-size:11.5px; color:var(--lx-ink-2); margin:7px 0 0; }
+.bm-cue b{ color:var(--lx-rose); }
+
+/* ---- 食事ワンポイント ---- */
+.bm-day-food{ margin:16px 30px 0; background:var(--lx-blush-soft); border-radius:8px; padding:14px 18px; }
+.bm-day-food b{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-rose-deep); }
+.bm-day-food p{ font-family:var(--lx-sans); font-size:13px; color:var(--lx-ink-2); margin:5px 0 0; line-height:1.75; }
+.bm-done-btn{ display:block; margin:22px auto 0; }
+
+/* ---- レスポンシブ ---- */
+@media (max-width:880px){
+  .lx-section-wrap{ padding:18px 16px 60px; }
+  .bm-panel{ padding:28px 18px; }
+  .bm-phases{ grid-template-columns:1fr; gap:12px; }
+  .bm-cal{ gap:6px; }
+  .bm-cell-day{ font-size:16px; }
+  .bm-cell-label{ font-size:8.5px; }
+  .bm-day-head, .bm-day-sec, .bm-day-food{ padding-left:20px; padding-right:20px; }
+  .bm-day-food{ margin-left:20px; margin-right:20px; }
+  .bm-ex-illust{ flex-basis:72px; width:72px; height:72px; }
+}
