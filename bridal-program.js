@@ -5,8 +5,8 @@
 // Phase 3 (Day21-30) しあげる（仕上げ＋当日コンディション調整）
 // Day 7,14,21,28 = リセット日（ケアのみ） / Day27-30 = テーパー(追い込み減)
 // ===================================================================
-import { buildBridalPool, buildFlowPools } from './bridal-engine.js?v=13';
-import { evidenceScore } from './evidence-map.js?v=13';
+import { buildBridalPool, buildFlowPools } from './bridal-engine.js?v=14';
+import { evidenceScore } from './evidence-map.js?v=14';
 
 // ポーズの「基本形」名（(くびれ)等の部位サフィックスを除いた核）。同じ基本ポーズが同日に並ぶ重複感を防ぐ
 function baseName(ex){
@@ -68,8 +68,8 @@ function poolForPhase(list, phase){
 // ===== メイン: 30日生成 =====
 // opts: { focusAreas:[], careAreas:[], minutes:10|20|30, level:'beginner'|'intermediate' }
 export function build30Day(opts){
-  const { focusAreas=[], careAreas=[], diagnosisKeys=[], minutes=20, level='beginner', careOnly=false } = opts||{};
-  const pool = buildBridalPool(focusAreas, careAreas, diagnosisKeys);
+  const { focusAreas=[], careAreas=[], diagnosisKeys=[], safety=[], minutes=20, level='beginner', careOnly=false } = opts||{};
+  const pool = buildBridalPool(focusAreas, careAreas, diagnosisKeys, safety);
   const flow = buildFlowPools();
   const tList = pool.training, cList = pool.care;
   const oList = flow.opening, clList = flow.closing;

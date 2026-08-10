@@ -2,11 +2,11 @@
 // 30日ブライダルボディメイク — メインコントローラ
 // 問診 → プロファイル → 30日プラン生成 → カレンダー → 日別詳細
 // ===================================================================
-import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor,
-         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=13';
-import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=13';
-import { AREA_LABEL } from './bridal-engine.js?v=13';
-import { EVIDENCE } from './evidence-map.js?v=13';
+import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor, SLEEP_CARE,
+         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=14';
+import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=14';
+import { AREA_LABEL } from './bridal-engine.js?v=14';
+import { EVIDENCE } from './evidence-map.js?v=14';
 
 const $ = s => document.querySelector(s);
 const PROGRESS_KEY = 'memoro-bridal-progress-v1';
@@ -174,6 +174,13 @@ function renderPlan(profile, days, pregnant){
       </div>
       <div id="bm-comparison"></div>
     </div>
+    <div class="bm-block bm-sleep-block">
+      <h4>🌙 いちばん輝くための「眠り」</h4>
+      <p class="bm-cal-help">運動・食事と並ぶ第3の柱。睡眠は肌・むくみ・当日のコンディションを大きく左右します。</p>
+      <div class="bm-sleep-grid">
+        ${SLEEP_CARE.map(x=>`<div class="bm-sleep-item"><span class="bm-sleep-ico">${x.icon}</span><div class="bm-sleep-txt"><b>${x.title}</b><p>${x.body}</p></div></div>`).join('')}
+      </div>
+    </div>
     <div class="bm-actions"><button class="lx-btn lx-btn-ghost" id="bm-restart">もう一度作る</button></div>
     <p class="pc-disclaimer">${DISCLAIMER}</p>
   `;
@@ -193,7 +200,13 @@ function renderPlan(profile, days, pregnant){
 
 // ---- 日別詳細 ----
 function exerciseCard(ex, phase, taper){
-  const how = (ex.how||[]).map(h => `<li>${h}</li>`).join('');
+  // 手順末尾の時間・回数(「〜1分。」「45秒。反対も」)は処方バッジと二重になるため表示時に除去。「3秒キープ」等の途中の動作数値は保持
+  const cleanStep = h => h
+    .replace(/[、。]?\s*各?\d+\s*(回|秒|分|カウント|呼吸)(\s*×\s*\d+\s*セット)?\s*。?\s*$/, '。')
+    .replace(/\d+\s*(回|秒|分|カウント|呼吸)。?\s*(反対も|左右交互|逆も|反対側も|反対側)/, '。$2')
+    .replace(/^。+\s*/, '')
+    .replace(/。。+/g,'。');
+  const how = (ex.how||[]).map(cleanStep).filter(h => h && h!=='。').map(h => `<li>${h}</li>`).join('');
   const cues = ex.cues ? `<p class="bm-cue"><b>◎</b> ${ex.cues.do||''}　<b>×</b> ${ex.cues.dont||''}</p>` : '';
   const presc = prescriptionFor(ex, phase, taper);
   const breath = ex.breath ? `<p class="bm-ex-breath">🌬 呼吸：${ex.breath}</p>` : '';

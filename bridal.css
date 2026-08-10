@@ -72,6 +72,14 @@
 /* ---- 注意・安全 ---- */
 .bm-notice{ background:var(--lx-blush-soft); border:1px solid var(--lx-blush); border-radius:8px; padding:16px 20px; font-family:var(--lx-sans); font-size:13px; color:var(--lx-rose-deep); line-height:1.85; margin-bottom:20px; }
 .bm-safety{ font-family:var(--lx-sans); font-size:13px; color:var(--lx-ink-2); line-height:1.95; margin:0; padding-left:1.2em; }
+
+/* 睡眠・回復ケア（運動・食事に並ぶ第3の柱） */
+.bm-sleep-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.bm-sleep-item{ display:flex; gap:12px; align-items:flex-start; background:var(--lx-blush-soft); border-radius:10px; padding:14px 16px; }
+.bm-sleep-ico{ font-size:20px; line-height:1.35; flex:0 0 auto; }
+.bm-sleep-txt b{ display:block; font-family:var(--lx-serif); font-size:14px; color:var(--lx-rose-deep); margin-bottom:3px; }
+.bm-sleep-txt p{ font-family:var(--lx-sans); font-size:12.5px; color:var(--lx-ink-2); line-height:1.7; margin:0; }
+@media (max-width:640px){ .bm-sleep-grid{ grid-template-columns:1fr; } }
 .bm-actions{ text-align:center; margin:26px 0 6px; }
 
 /* ---- 日別モーダル ---- */

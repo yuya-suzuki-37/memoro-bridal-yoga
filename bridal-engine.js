@@ -6,9 +6,9 @@
 import { DB_PERSONAL } from './db-personal.js';
 import { DB_PILATES } from './db-pilates.js';
 import { DB_SEITAI } from './db-seitai.js';
-import { DB_YOGA } from './db-yoga.js?v=13';
-import { DB_YOGA_BRIDAL } from './db-yoga-bridal.js?v=13';
-import { evidenceScore } from './evidence-map.js?v=13';
+import { DB_YOGA } from './db-yoga.js?v=14';
+import { DB_YOGA_BRIDAL } from './db-yoga-bridal.js?v=14';
+import { evidenceScore } from './evidence-map.js?v=14';
 
 // ヨガ主軸: ヨガ(花嫁向け拡充→標準の順)を先頭に置き、同条件ならヨガが優先採用される。
 // personal/pilates/seitai は、ヨガで埋まらない部位の「補完」に回る。
@@ -43,10 +43,22 @@ const OK_EQUIP = new Set(['なし','マット','壁','椅子','ソファ/椅子'
 const NG_TECH = new Set(['plyometric','cardio','pilates']);
 
 function equipOk(eq){ return !eq || OK_EQUIP.has(eq); }
-function safe(ex){
+function safe(ex, safety){
   if (NG_TECH.has(ex.technique)) return false;
   if (!equipOk(ex.equipment)) return false;
   if (ex.intensity >= 4) return false;   // 花嫁(20〜30代)向けに中強度(3)まで許可
+  // 不安部位に負担のかかるポーズを除外（中強度i2以上のみ・軽いポーズi1は残してプール枯渇を防ぐ）
+  if (safety && safety.length && (ex.intensity||1) >= 2){
+    const n = ex.name || '';
+    if (safety.includes('waist') &&    // 腰: 強い後屈・脊柱を反らす
+        (ex.technique==='backbend' || ex.bodyPart==='spine' ||
+         /コブラ|アップドッグ|上向きの犬|ラクダ|ウシュトラ|弓|ダヌラ|ローカスト|バッタ|ブリッジ|橋|反ら/.test(n))) return false;
+    if (safety.includes('knee') &&     // 膝: 深く曲げる立位・膝荷重
+        (/ウォリアー|戦士|英雄|ヴィーラ|椅子|チェア|ランジ|三角|トリコナ|ピジョン|鳩|正座/.test(n))) return false;
+    if (safety.includes('shoulder') && // 肩: 腕で体重を支える
+        (ex.bodyPart==='arm' || ex.bodyPart==='shoulder' ||
+         /プランク|チャトランガ|ダウンドッグ|下向きの犬|ドルフィン|イルカ|クロウ|鶴|逆転|肩立ち|ヘッドスタンド|プッシュ/.test(n))) return false;
+  }
   return true;
 }
 
@@ -59,18 +71,18 @@ export function isCare(ex){
 export function isTraining(ex){ return !isCare(ex); }
 
 const isYogaEx = ex => ex.courses && ex.courses.includes('yoga');
-function byBodyParts(parts, pred, yogaOnly){
+function byBodyParts(parts, pred, yogaOnly, safety){
   const set = new Set(parts);
-  return ALL.filter(ex => safe(ex) && set.has(ex.bodyPart) && pred(ex) && (!yogaOnly || isYogaEx(ex)));
+  return ALL.filter(ex => safe(ex, safety) && set.has(ex.bodyPart) && pred(ex) && (!yogaOnly || isYogaEx(ex)));
 }
 function addUnique(map, list){ list.forEach(ex => { if (!map.has(ex.id)) map.set(ex.id, ex); }); }
 
 // 姿勢診断の problemKeys に効くヨガ（targetProblemsマッチ）を集める。
 // 姿勢連携で最優先に採用する種目群。診断なし(空)なら [] を返す。
-export function byProblems(problemKeys, pred){
+export function byProblems(problemKeys, pred, safety){
   const keys = new Set(problemKeys || []);
   if (!keys.size) return [];
-  return ALL.filter(ex => safe(ex) && isYogaEx(ex) && pred(ex)
+  return ALL.filter(ex => safe(ex, safety) && isYogaEx(ex) && pred(ex)
     && ex.targetProblems && ex.targetProblems.some(p => keys.has(p)));
 }
 
@@ -96,51 +108,51 @@ function dedupeByBase(list){
 
 // ===== プール生成 =====
 // focusAreas: 引き締めたい部位(Q4) / careAreas: むくみ・姿勢など(Q5派生)
-export function buildBridalPool(focusAreas, careAreas, diagnosisKeys){
+export function buildBridalPool(focusAreas, careAreas, diagnosisKeys, safety){
   const train = new Map();
   const care  = new Map();
   const TRAIN_MIN = 8, CARE_MIN = 10;
 
   // ===== 0) 姿勢診断があれば、その姿勢問題に効くヨガを最優先で入れる =====
-  addUnique(train, byProblems(diagnosisKeys, isTraining));
-  addUnique(care,  byProblems(diagnosisKeys, isCare));
+  addUnique(train, byProblems(diagnosisKeys, isTraining, safety));
+  addUnique(care,  byProblems(diagnosisKeys, isCare, safety));
 
   // ===== 1) まずヨガだけで集める（ヨガ主軸）=====
   (focusAreas||[]).forEach(a => {
     const parts = AREA_TRAIN_BODYPARTS[a];
-    if (parts) addUnique(train, byBodyParts(parts, isTraining, true));
+    if (parts) addUnique(train, byBodyParts(parts, isTraining, true, safety));
   });
   (careAreas||[]).forEach(a => {
     const parts = AREA_CARE_BODYPARTS[a];
-    if (parts) addUnique(care, byBodyParts(parts, isCare, true));
+    if (parts) addUnique(care, byBodyParts(parts, isCare, true, safety));
   });
   // 選択部位のヨガのストレッチ/リリースもケアに混ぜる
   (focusAreas||[]).forEach(a => {
     const parts = AREA_TRAIN_BODYPARTS[a];
-    if (parts) addUnique(care, byBodyParts(parts, isCare, true));
+    if (parts) addUnique(care, byBodyParts(parts, isCare, true, safety));
   });
   // ケアはヨガの休息・呼吸・ストレッチ系を部位に縛られず広く採用（ヨガ主軸を維持）
-  addUnique(care, ALL.filter(ex => isYogaEx(ex) && isCare(ex) && safe(ex)));
+  addUnique(care, ALL.filter(ex => isYogaEx(ex) && isCare(ex) && safe(ex, safety)));
 
   // ===== 2) ヨガで不足する分だけ、他DB(自重/ピラティス/整体)で補完 =====
   if (train.size < TRAIN_MIN){
     (focusAreas||[]).forEach(a => {
       const parts = AREA_TRAIN_BODYPARTS[a];
-      if (parts) addUnique(train, byBodyParts(parts, isTraining, false));
+      if (parts) addUnique(train, byBodyParts(parts, isTraining, false, safety));
     });
   }
   if (train.size < TRAIN_MIN){
     addUnique(train, ALL.filter(ex =>
-      safe(ex) && isTraining(ex) && ['core','leg','fullbody','whole','hip'].includes(ex.bodyPart)));
+      safe(ex, safety) && isTraining(ex) && ['core','leg','fullbody','whole','hip'].includes(ex.bodyPart)));
   }
   if (care.size < CARE_MIN){
     (careAreas||[]).forEach(a => {
       const parts = AREA_CARE_BODYPARTS[a];
-      if (parts) addUnique(care, byBodyParts(parts, isCare, false));
+      if (parts) addUnique(care, byBodyParts(parts, isCare, false, safety));
     });
   }
   if (care.size < CARE_MIN){
-    addUnique(care, byBodyParts(['leg','foot','neck','back','chest','spine','core'], isCare, false));
+    addUnique(care, byBodyParts(['leg','foot','neck','back','chest','spine','core'], isCare, false, safety));
   }
 
   return { training: dedupeByBase([...train.values()]), care: dedupeByBase([...care.values()]) };
