@@ -3,10 +3,10 @@
 // 問診 → プロファイル → 30日プラン生成 → カレンダー → 日別詳細
 // ===================================================================
 import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor, SLEEP_CARE,
-         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=14';
-import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=14';
-import { AREA_LABEL } from './bridal-engine.js?v=14';
-import { EVIDENCE } from './evidence-map.js?v=14';
+         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=16';
+import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=16';
+import { AREA_LABEL } from './bridal-engine.js?v=16';
+import { EVIDENCE } from './evidence-map.js?v=16';
 
 const $ = s => document.querySelector(s);
 const PROGRESS_KEY = 'memoro-bridal-progress-v1';
@@ -97,24 +97,51 @@ function updateProgress(){
 }
 
 // ---- 生成 ----
-$('#bm-generate').addEventListener('click', () => {
+$('#bm-generate').addEventListener('click', async () => {
   const ans = collect();
   if (!isComplete(ans)){ alert('すべての質問にお答えください。'); return; }
   const profile = buildProfile(ans, DIAGNOSIS);
-  showLoading('あなたの30日プランを作成しています…');
-  setTimeout(() => {
-    let days, pregnant = false;
-    if (profile.pregnant){
-      pregnant = true;
-      days = build30Day({ focusAreas:[], careAreas:['lymph','posture'], minutes:10, level:'beginner', careOnly:true });
-    } else {
-      days = build30Day(profile);
-    }
-    hideLoading();
-    renderPlan(profile, days, pregnant);
-    const r = $('#bm-result'); r.hidden = false; r.scrollIntoView({ behavior:'smooth', block:'start' });
-  }, 900);
+  await runAnalyzing();   // 進捗リング＋項目チェックの演出（診断→結果の"間"を作り込む・kogao統一）
+  let days, pregnant = false;
+  if (profile.pregnant){
+    pregnant = true;
+    days = build30Day({ focusAreas:[], careAreas:['lymph','posture'], minutes:10, level:'beginner', careOnly:true });
+  } else {
+    days = build30Day(profile);
+  }
+  renderPlan(profile, days, pregnant);
+  const r = $('#bm-result'); r.hidden = false; r.scrollIntoView({ behavior:'smooth', block:'start' });
 });
+
+// 解析中の演出（進捗リング0→100%＋診断項目が順次チェック）— kogao統一
+function runAnalyzing(){
+  return new Promise(resolve => {
+    const items = ['体のバランス', 'ドレス映えの部位', '姿勢のクセ', '柔軟性・可動域', '当日までの日数'];
+    const ov = document.createElement('div');
+    ov.className = 'analyzing-ov';
+    ov.innerHTML = `
+      <div class="az-card">
+        <div class="az-ring">
+          <svg viewBox="0 0 80 80"><circle class="az-track" cx="40" cy="40" r="34"/><circle class="az-prog" cx="40" cy="40" r="34"/></svg>
+          <span class="az-pct">0%</span>
+        </div>
+        <p class="az-title">あなた専用のプランを組み立てています</p>
+        <ul class="az-list">${items.map(t => `<li><span class="az-check"></span>${t}</li>`).join('')}</ul>
+      </div>`;
+    document.body.appendChild(ov);
+    requestAnimationFrame(() => ov.classList.add('in'));
+    const lis = ov.querySelectorAll('.az-list li');
+    lis.forEach((li, i) => setTimeout(() => li.classList.add('done'), 380 + i * 330));
+    const pctEl = ov.querySelector('.az-pct'), progEl = ov.querySelector('.az-prog');
+    let p = 0;
+    const tick = setInterval(() => {
+      p = Math.min(100, p + 2); pctEl.textContent = p + '%';
+      progEl.style.strokeDashoffset = String(214 * (1 - p / 100));
+      if (p >= 100) clearInterval(tick);
+    }, 34);
+    setTimeout(() => { ov.classList.add('out'); setTimeout(() => { ov.remove(); resolve(); }, 400); }, 2200);
+  });
+}
 
 function showLoading(t){ $('#bm-loading-text').textContent = t || '処理中…'; $('#bm-loading').hidden = false; }
 function hideLoading(){ $('#bm-loading').hidden = true; }
@@ -130,6 +157,8 @@ function renderPlan(profile, days, pregnant){
   const prog = loadProgress();
   const title = pregnant ? 'やさしいマタニティ・ケアプラン' : planTitle(profile);
   const focusLabels = profile.focusAreas.map(a => AREA_LABEL[a]).filter(Boolean).join('・');
+  const focusChips = (pregnant ? ['むくみ・巡り','姿勢'] : profile.focusAreas.map(a => AREA_LABEL[a]).filter(Boolean))
+    .map(l => `<span class="dx-chip">${l}</span>`).join('');
 
   const phaseCards = [1,2,3].map(p => {
     const info = PHASE_INFO[p];
@@ -152,11 +181,18 @@ function renderPlan(profile, days, pregnant){
     ? `<div class="bm-block"><h4>あなたへの注意ポイント</h4><ul class="bm-safety">${safetyNotes}</ul></div>` : '';
 
   $('#bm-result-body').innerHTML = `
-    <div class="lx-sec-head">
-      <span class="lx-sec-no">YOUR 30-DAY PLAN</span>
-      <h2 class="lx-sec-title">${title}</h2>
-      <p class="lx-sec-sub">${focusLabels ? focusLabels+'を中心に／' : ''}挙式まで約${profile.days}日・1日約${profile.minutes}分・自宅でOK</p>
-    </div>
+    <section class="result-hero">
+      <div class="rh-visual">
+        <img src="assets/result-visual.png?v=16" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
+        <span class="rh-script">your yoga care</span>
+      </div>
+      <div class="rh-body">
+        <p class="announce">YOUR 30-DAY PLAN</p>
+        <h2 class="type-name">${title}</h2>
+        <div class="dx-chips">${focusChips}</div>
+        <p class="type-desc">${focusLabels ? focusLabels+'を中心に／' : ''}挙式まで約${profile.days}日・1日約${profile.minutes}分・自宅でOK</p>
+      </div>
+    </section>
     <div id="bm-dashboard" class="bm-dashboard">${dashboardHtml()}</div>
     ${pregNotice}
     <div class="bm-phases">${phaseCards}</div>

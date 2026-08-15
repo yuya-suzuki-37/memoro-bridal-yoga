@@ -2,8 +2,8 @@
 
 /* ヒーロー画像（骨格診断用） */
 body.lx .lx-hero-bg{
-  background-image:url('assets/sk-hero.png') !important;
-  background-position:center top; background-size:cover; background-repeat:no-repeat;
+  background-image:url('assets/hero-bride.png?v=16') !important;
+  background-position:center 18%; background-size:cover; background-repeat:no-repeat;
 }
 /* タイプ別ドレス画像 */
 .pc-type-img{ width:100%; max-width:300px; border-radius:12px; display:block; margin:0 auto 18px; box-shadow:0 14px 34px rgba(71,63,54,.16); }
