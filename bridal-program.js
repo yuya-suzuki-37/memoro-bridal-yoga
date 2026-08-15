@@ -5,8 +5,8 @@
 // Phase 3 (Day21-30) しあげる（仕上げ＋当日コンディション調整）
 // Day 7,14,21,28 = リセット日（ケアのみ） / Day27-30 = テーパー(追い込み減)
 // ===================================================================
-import { buildBridalPool, buildFlowPools } from './bridal-engine.js?v=16';
-import { evidenceScore } from './evidence-map.js?v=16';
+import { buildBridalPool, buildFlowPools } from './bridal-engine.js?v=17';
+import { evidenceScore } from './evidence-map.js?v=17';
 
 // ポーズの「基本形」名（(くびれ)等の部位サフィックスを除いた核）。同じ基本ポーズが同日に並ぶ重複感を防ぐ
 function baseName(ex){
