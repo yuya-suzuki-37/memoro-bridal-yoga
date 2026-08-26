@@ -180,7 +180,7 @@
 .bm-ex-target{ display:flex; gap:6px; flex-wrap:wrap; margin:8px 0 2px; }
 .bm-ex-target span{ font-family:var(--lx-serif); font-size:11px; color:#fff; background:linear-gradient(135deg,#D49A92,#B06E60); border-radius:100px; padding:.34em 1em; letter-spacing:.02em; }
 .bm-ex-stage{ position:relative; border-radius:14px; overflow:hidden; margin:10px 0; border:1px solid var(--lx-line); background:#F6EEE9; }
-.bm-ex-stage img{ width:100%; display:block; }
+.bm-ex-stage img{ width:100%; aspect-ratio:1; object-fit:cover; display:block; }
 .bm-ex-arrow{ position:absolute; pointer-events:none; }
 .bm-ex-arrow svg{ width:100%; height:100%; overflow:visible; }
 .bm-ex-arrow-label{ position:absolute; left:2%; top:4%; font-family:var(--lx-serif); font-weight:700; font-size:12px; color:var(--lx-rose-deep); background:rgba(255,255,255,.9); border-radius:100px; padding:.2em .75em; box-shadow:0 4px 12px -6px rgba(120,90,45,.4); white-space:nowrap; }
@@ -201,7 +201,7 @@
 /* 開始→完成の2枚フロー（動きの流れを見せる）*/
 .bm-ex-flow{ display:flex; align-items:center; gap:7px; margin:10px 0; }
 .bm-ex-shot{ flex:1; min-width:0; margin:0; border-radius:12px; overflow:hidden; border:1px solid var(--lx-line); background:#F6EEE9; position:relative; }
-.bm-ex-shot img{ width:100%; display:block; }
+.bm-ex-shot img{ width:100%; aspect-ratio:1; object-fit:cover; display:block; }
 .bm-ex-shot figcaption{ position:absolute; left:0; right:0; bottom:0; background:linear-gradient(to top,rgba(51,48,43,.72),transparent); color:#fff; font-family:var(--lx-serif); font-weight:600; font-size:11px; text-align:center; padding:16px 4px 5px; letter-spacing:.04em; }
 .bm-ex-flow-arrow{ flex:none; display:flex; flex-direction:column; align-items:center; color:var(--lx-rose-deep); }
 .bm-ex-flow-arrow span{ font-family:var(--lx-serif); font-size:9px; writing-mode:vertical-rl; white-space:nowrap; margin-bottom:3px; letter-spacing:.05em; }

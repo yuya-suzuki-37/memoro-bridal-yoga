@@ -3,10 +3,10 @@
 // 問診 → プロファイル → 30日プラン生成 → カレンダー → 日別詳細
 // ===================================================================
 import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor, SLEEP_CARE,
-         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=20';
-import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=20';
-import { AREA_LABEL } from './bridal-engine.js?v=20';
-import { EVIDENCE } from './evidence-map.js?v=20';
+         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=23';
+import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=23';
+import { AREA_LABEL } from './bridal-engine.js?v=23';
+import { EVIDENCE } from './evidence-map.js?v=23';
 
 const $ = s => document.querySelector(s);
 const PROGRESS_KEY = 'memoro-bridal-progress-v1';
@@ -183,7 +183,7 @@ function renderPlan(profile, days, pregnant){
   $('#bm-result-body').innerHTML = `
     <section class="result-hero">
       <div class="rh-visual">
-        <img src="assets/result-visual.png?v=20" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
+        <img src="assets/result-visual.png?v=23" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
         <span class="rh-script">your yoga care</span>
       </div>
       <div class="rh-body">
@@ -236,9 +236,9 @@ function renderPlan(profile, days, pregnant){
 
 // ---- 日別詳細 ----
 // 実写図解があるポーズ(assets/poses/{id}.png)。上司FB「静止イラストでは動きが分からない」→実写＋番号ステップ＋矢印で理解を上げる
-const POSE_PHOTOS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog']);
+const POSE_PHOTOS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog','yg_br_reverse_plank','yg_br_dolphin_plank','yg_dolphin_pose','yg_br_revolved_chair','yg_half_lord_of_fishes']);
 // 開始肢位の写真({id}-start.png)があるポーズ。開始→完成の2枚で動きの流れを見せる（上司FB「動きが分からない」対応）
-const POSE_STARTS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog']);
+const POSE_STARTS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog','yg_br_reverse_plank','yg_br_dolphin_plank','yg_dolphin_pose','yg_br_revolved_chair','yg_half_lord_of_fishes']);
 // ポーズ別オーバーレイ(部位バッジ／2枚の間の動きラベル／1枚時の写真上矢印・番号ピン)
 const POSE_OVERLAY = {
   yg_br_cobra_decolte: { target:['背中','デコルテ','お腹の伸び'], flowLabel:'胸を開く',
@@ -251,6 +251,11 @@ const POSE_OVERLAY = {
   yg_br_high_plank:   { target:['体幹','二の腕'], flowLabel:'一直線に支える' },
   yg_half_boat:       { target:['お腹'], flowLabel:'脚を持ち上げる' },
   yg_upward_dog:      { target:['背中','デコルテ'], flowLabel:'反らす' },
+  yg_br_reverse_plank:    { target:['二の腕','背中'], flowLabel:'腰を持ち上げる' },
+  yg_br_dolphin_plank:    { target:['二の腕','体幹'], flowLabel:'脚を伸ばす' },
+  yg_dolphin_pose:        { target:['肩まわり','背中'], flowLabel:'お尻を上げる' },
+  yg_br_revolved_chair:   { target:['くびれ','太もも'], flowLabel:'ねじる' },
+  yg_half_lord_of_fishes: { target:['くびれ','背中'], flowLabel:'深くねじる' },
 };
 
 function exerciseCard(ex, phase, taper){
@@ -278,11 +283,11 @@ function exerciseCard(ex, phase, taper){
     const cues = ex.cues ? `<div class="bm-fig-cues"><div class="bm-fig-cue ok"><h6>◎ ポイント</h6><p>${ex.cues.do||''}</p></div><div class="bm-fig-cue ng"><h6>✕ 注意</h6><p>${ex.cues.dont||''}</p></div></div>` : '';
     const stage = POSE_STARTS.has(ex.id)
       ? `<div class="bm-ex-flow">
-           <figure class="bm-ex-shot"><img src="assets/poses/${ex.id}-start.png?v=20" alt="${ex.name} 開始肢位" loading="lazy"><figcaption>① 開始のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${ex.id}-start.png?v=23" alt="${ex.name} 開始肢位"><figcaption>① 開始のかたち</figcaption></figure>
            <div class="bm-ex-flow-arrow">${ov.flowLabel?`<span>${ov.flowLabel}</span>`:''}<b>→</b></div>
-           <figure class="bm-ex-shot"><img src="assets/poses/${ex.id}.png?v=20" alt="${ex.name} 完成肢位" loading="lazy"><figcaption>② 完成のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${ex.id}.png?v=23" alt="${ex.name} 完成肢位"><figcaption>② 完成のかたち</figcaption></figure>
          </div>`
-      : `<div class="bm-ex-stage"><img src="assets/poses/${ex.id}.png?v=20" alt="${ex.name}" loading="lazy">${arrow}${pins}</div>`;
+      : `<div class="bm-ex-stage"><img src="assets/poses/${ex.id}.png?v=23" alt="${ex.name}">${arrow}${pins}</div>`;
     return `<div class="bm-ex bm-ex-fig">
       ${head}${target}
       ${stage}
