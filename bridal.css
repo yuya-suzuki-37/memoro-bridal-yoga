@@ -174,3 +174,35 @@
   .bm-day-food{ margin-left:20px; margin-right:20px; }
   .bm-ex-illust{ flex-basis:72px; width:72px; height:72px; }
 }
+
+/* ===== ポーズ実写図解（上司FB「静止イラストでは動きが分からない」対応）===== */
+.bm-ex-fig{ flex-direction:column; gap:0; }
+.bm-ex-target{ display:flex; gap:6px; flex-wrap:wrap; margin:8px 0 2px; }
+.bm-ex-target span{ font-family:var(--lx-serif); font-size:11px; color:#fff; background:linear-gradient(135deg,#D49A92,#B06E60); border-radius:100px; padding:.34em 1em; letter-spacing:.02em; }
+.bm-ex-stage{ position:relative; border-radius:14px; overflow:hidden; margin:10px 0; border:1px solid var(--lx-line); background:#F6EEE9; }
+.bm-ex-stage img{ width:100%; display:block; }
+.bm-ex-arrow{ position:absolute; pointer-events:none; }
+.bm-ex-arrow svg{ width:100%; height:100%; overflow:visible; }
+.bm-ex-arrow-label{ position:absolute; left:2%; top:4%; font-family:var(--lx-serif); font-weight:700; font-size:12px; color:var(--lx-rose-deep); background:rgba(255,255,255,.9); border-radius:100px; padding:.2em .75em; box-shadow:0 4px 12px -6px rgba(120,90,45,.4); white-space:nowrap; }
+.bm-ex-pin{ position:absolute; width:24px; height:24px; border-radius:50%; background:var(--lx-gold); color:#fff; font-family:var(--lx-serif); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 12px -4px var(--lx-gold-deep); border:2px solid #fff; transform:translate(-50%,-50%); }
+.bm-fig-steps{ display:flex; flex-direction:column; gap:8px; margin:2px 0 4px; }
+.bm-fig-step{ display:flex; gap:11px; align-items:flex-start; background:var(--lx-paper); border:1px solid var(--lx-line); border-radius:12px; padding:11px 13px; }
+.bm-fig-step .n{ flex:none; width:23px; height:23px; border-radius:50%; background:var(--lx-gold); color:#fff; font-family:var(--lx-serif); font-weight:700; font-size:13px; display:flex; align-items:center; justify-content:center; }
+.bm-fig-step p{ font-family:var(--lx-sans); font-size:13px; color:var(--lx-ink); line-height:1.7; margin:0; }
+.bm-fig-cues{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:8px 0 2px; }
+.bm-fig-cue{ border-radius:10px; padding:10px 12px; }
+.bm-fig-cue.ok{ background:#F1F7F2; border:1px solid #CADDCE; }
+.bm-fig-cue.ng{ background:#FBEFED; border:1px solid #EBCBC5; }
+.bm-fig-cue h6{ font-family:var(--lx-serif); font-size:12px; margin:0 0 3px; }
+.bm-fig-cue.ok h6{ color:#5E8C6A; } .bm-fig-cue.ng h6{ color:#C56B60; }
+.bm-fig-cue p{ font-family:var(--lx-sans); font-size:11.5px; color:var(--lx-ink-2); line-height:1.6; margin:0; }
+@media (max-width:520px){ .bm-fig-cues{ grid-template-columns:1fr; } }
+
+/* 開始→完成の2枚フロー（動きの流れを見せる）*/
+.bm-ex-flow{ display:flex; align-items:center; gap:7px; margin:10px 0; }
+.bm-ex-shot{ flex:1; min-width:0; margin:0; border-radius:12px; overflow:hidden; border:1px solid var(--lx-line); background:#F6EEE9; position:relative; }
+.bm-ex-shot img{ width:100%; display:block; }
+.bm-ex-shot figcaption{ position:absolute; left:0; right:0; bottom:0; background:linear-gradient(to top,rgba(51,48,43,.72),transparent); color:#fff; font-family:var(--lx-serif); font-weight:600; font-size:11px; text-align:center; padding:16px 4px 5px; letter-spacing:.04em; }
+.bm-ex-flow-arrow{ flex:none; display:flex; flex-direction:column; align-items:center; color:var(--lx-rose-deep); }
+.bm-ex-flow-arrow span{ font-family:var(--lx-serif); font-size:9px; writing-mode:vertical-rl; white-space:nowrap; margin-bottom:3px; letter-spacing:.05em; }
+.bm-ex-flow-arrow b{ font-size:19px; line-height:1; }

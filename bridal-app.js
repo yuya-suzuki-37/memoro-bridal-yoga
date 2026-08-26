@@ -3,10 +3,10 @@
 // 問診 → プロファイル → 30日プラン生成 → カレンダー → 日別詳細
 // ===================================================================
 import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor, SLEEP_CARE,
-         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=17';
-import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=17';
-import { AREA_LABEL } from './bridal-engine.js?v=17';
-import { EVIDENCE } from './evidence-map.js?v=17';
+         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=20';
+import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=20';
+import { AREA_LABEL } from './bridal-engine.js?v=20';
+import { EVIDENCE } from './evidence-map.js?v=20';
 
 const $ = s => document.querySelector(s);
 const PROGRESS_KEY = 'memoro-bridal-progress-v1';
@@ -183,7 +183,7 @@ function renderPlan(profile, days, pregnant){
   $('#bm-result-body').innerHTML = `
     <section class="result-hero">
       <div class="rh-visual">
-        <img src="assets/result-visual.png?v=17" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
+        <img src="assets/result-visual.png?v=20" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
         <span class="rh-script">your yoga care</span>
       </div>
       <div class="rh-body">
@@ -235,28 +235,72 @@ function renderPlan(profile, days, pregnant){
 }
 
 // ---- 日別詳細 ----
+// 実写図解があるポーズ(assets/poses/{id}.png)。上司FB「静止イラストでは動きが分からない」→実写＋番号ステップ＋矢印で理解を上げる
+const POSE_PHOTOS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog']);
+// 開始肢位の写真({id}-start.png)があるポーズ。開始→完成の2枚で動きの流れを見せる（上司FB「動きが分からない」対応）
+const POSE_STARTS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog']);
+// ポーズ別オーバーレイ(部位バッジ／2枚の間の動きラベル／1枚時の写真上矢印・番号ピン)
+const POSE_OVERLAY = {
+  yg_br_cobra_decolte: { target:['背中','デコルテ','お腹の伸び'], flowLabel:'胸を開く',
+    arrow:{label:'胸を開く↗',x:26,y:20,w:34,h:44,d:'M20,120 Q10,55 60,18'},
+    pins:[{n:1,x:44,y:74},{n:2,x:22,y:40}] },
+  yg_br_side_plank:   { target:['二の腕','くびれ'], flowLabel:'腰を持ち上げる' },
+  yg_cow_face:        { target:['肩まわり','二の腕'], flowLabel:'背中で組む' },
+  yg_seated_twist_y:  { target:['くびれ','背中'], flowLabel:'ねじる' },
+  yg_locust:          { target:['背中','お尻'], flowLabel:'持ち上げる' },
+  yg_br_high_plank:   { target:['体幹','二の腕'], flowLabel:'一直線に支える' },
+  yg_half_boat:       { target:['お腹'], flowLabel:'脚を持ち上げる' },
+  yg_upward_dog:      { target:['背中','デコルテ'], flowLabel:'反らす' },
+};
+
 function exerciseCard(ex, phase, taper){
-  // 手順末尾の時間・回数(「〜1分。」「45秒。反対も」)は処方バッジと二重になるため表示時に除去。「3秒キープ」等の途中の動作数値は保持
+  // 手順末尾の時間・回数は処方バッジと二重になるため表示時に除去。「3秒キープ」等の途中の動作数値は保持
   const cleanStep = h => h
     .replace(/[、。]?\s*各?\d+\s*(回|秒|分|カウント|呼吸)(\s*×\s*\d+\s*セット)?\s*。?\s*$/, '。')
     .replace(/\d+\s*(回|秒|分|カウント|呼吸)。?\s*(反対も|左右交互|逆も|反対側も|反対側)/, '。$2')
     .replace(/^。+\s*/, '')
     .replace(/。。+/g,'。');
-  const how = (ex.how||[]).map(cleanStep).filter(h => h && h!=='。').map(h => `<li>${h}</li>`).join('');
-  const cues = ex.cues ? `<p class="bm-cue"><b>◎</b> ${ex.cues.do||''}　<b>×</b> ${ex.cues.dont||''}</p>` : '';
+  const steps = (ex.how||[]).map(cleanStep).filter(h => h && h!=='。');
   const presc = prescriptionFor(ex, phase, taper);
   const breath = ex.breath ? `<p class="bm-ex-breath">🌬 呼吸：${ex.breath}</p>` : '';
   const modify = ex.modify ? `<p class="bm-ex-modify">💡 きつい時は：${ex.modify}</p>` : '';
+  const evHTML = (()=>{ const ev=EVIDENCE[ex.id]; return ev?`<p class="bm-ex-evidence">🔬 ${ev.badge}<small>${ev.muscle}・${ev.activation} ／ 出典: ${ev.src}</small></p>`:''; })();
+  const head = `<div class="bm-ex-head"><h5>${ex.name}</h5><span class="bm-ex-presc">${presc}</span></div>`;
+  const purpose = ex.purpose ? `<p class="bm-ex-purpose">${ex.purpose}</p>` : '';
+
+  // ===== 実写図解モード（写真＋部位バッジ＋番号ステップ＋矢印＋◎✕）=====
+  if (POSE_PHOTOS.has(ex.id)){
+    const ov = POSE_OVERLAY[ex.id] || {};
+    const target = (ov.target||[]).length ? `<div class="bm-ex-target">${ov.target.map(t=>`<span>${t}</span>`).join('')}</div>` : '';
+    const arrow = ov.arrow ? `<div class="bm-ex-arrow" style="left:${ov.arrow.x}%;top:${ov.arrow.y}%;width:${ov.arrow.w}%;height:${ov.arrow.h}%"><svg viewBox="0 0 100 130"><defs><marker id="ah-${ex.id}" markerWidth="7" markerHeight="7" refX="4" refY="3.5" orient="auto"><path d="M0,0 L7,3.5 L0,7 Z" fill="#C88A82"/></marker></defs><path d="${ov.arrow.d}" fill="none" stroke="#C88A82" stroke-width="4" stroke-linecap="round" stroke-dasharray="1 9" marker-end="url(#ah-${ex.id})"/></svg><span class="bm-ex-arrow-label">${ov.arrow.label}</span></div>` : '';
+    const pins = (ov.pins||[]).map(p=>`<span class="bm-ex-pin" style="left:${p.x}%;top:${p.y}%">${p.n}</span>`).join('');
+    const stepCards = steps.map((h,i)=>`<div class="bm-fig-step"><span class="n">${i+1}</span><p>${h}</p></div>`).join('');
+    const cues = ex.cues ? `<div class="bm-fig-cues"><div class="bm-fig-cue ok"><h6>◎ ポイント</h6><p>${ex.cues.do||''}</p></div><div class="bm-fig-cue ng"><h6>✕ 注意</h6><p>${ex.cues.dont||''}</p></div></div>` : '';
+    const stage = POSE_STARTS.has(ex.id)
+      ? `<div class="bm-ex-flow">
+           <figure class="bm-ex-shot"><img src="assets/poses/${ex.id}-start.png?v=20" alt="${ex.name} 開始肢位" loading="lazy"><figcaption>① 開始のかたち</figcaption></figure>
+           <div class="bm-ex-flow-arrow">${ov.flowLabel?`<span>${ov.flowLabel}</span>`:''}<b>→</b></div>
+           <figure class="bm-ex-shot"><img src="assets/poses/${ex.id}.png?v=20" alt="${ex.name} 完成肢位" loading="lazy"><figcaption>② 完成のかたち</figcaption></figure>
+         </div>`
+      : `<div class="bm-ex-stage"><img src="assets/poses/${ex.id}.png?v=20" alt="${ex.name}" loading="lazy">${arrow}${pins}</div>`;
+    return `<div class="bm-ex bm-ex-fig">
+      ${head}${target}
+      ${stage}
+      ${purpose}${evHTML}
+      <div class="bm-fig-steps">${stepCards}</div>
+      ${breath}${cues}${modify}
+    </div>`;
+  }
+
+  // ===== 現状（SVGイラスト）モード =====
+  const how = steps.map(h => `<li>${h}</li>`).join('');
+  const cues = ex.cues ? `<p class="bm-cue"><b>◎</b> ${ex.cues.do||''}　<b>×</b> ${ex.cues.dont||''}</p>` : '';
   return `<div class="bm-ex">
     <div class="bm-ex-illust">${ex.illustration || ''}</div>
     <div class="bm-ex-body">
-      <div class="bm-ex-head"><h5>${ex.name}</h5><span class="bm-ex-presc">${presc}</span></div>
-      ${ex.purpose ? `<p class="bm-ex-purpose">${ex.purpose}</p>` : ''}
-      ${(()=>{ const ev=EVIDENCE[ex.id]; return ev?`<p class="bm-ex-evidence">🔬 ${ev.badge}<small>${ev.muscle}・${ev.activation} ／ 出典: ${ev.src}</small></p>`:''; })()}
+      ${head}${purpose}${evHTML}
       <ol class="bm-ex-how">${how}</ol>
-      ${breath}
-      ${cues}
-      ${modify}
+      ${breath}${cues}${modify}
     </div>
   </div>`;
 }
