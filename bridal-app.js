@@ -3,10 +3,10 @@
 // 問診 → プロファイル → 30日プラン生成 → カレンダー → 日別詳細
 // ===================================================================
 import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor, SLEEP_CARE,
-         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=24';
-import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=24';
-import { AREA_LABEL } from './bridal-engine.js?v=24';
-import { EVIDENCE } from './evidence-map.js?v=24';
+         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=25';
+import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=25';
+import { AREA_LABEL } from './bridal-engine.js?v=25';
+import { EVIDENCE } from './evidence-map.js?v=25';
 
 const $ = s => document.querySelector(s);
 const PROGRESS_KEY = 'memoro-bridal-progress-v1';
@@ -183,7 +183,7 @@ function renderPlan(profile, days, pregnant){
   $('#bm-result-body').innerHTML = `
     <section class="result-hero">
       <div class="rh-visual">
-        <img src="assets/result-visual.png?v=24" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
+        <img src="assets/result-visual.png?v=25" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
         <span class="rh-script">your yoga care</span>
       </div>
       <div class="rh-body">
@@ -291,11 +291,11 @@ function exerciseCard(ex, phase, taper){
     const cues = ex.cues ? `<div class="bm-fig-cues"><div class="bm-fig-cue ok"><h6>◎ ポイント</h6><p>${ex.cues.do||''}</p></div><div class="bm-fig-cue ng"><h6>✕ 注意</h6><p>${ex.cues.dont||''}</p></div></div>` : '';
     const stage = POSE_STARTS.has(ex.id)
       ? `<div class="bm-ex-flow">
-           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}-start.png?v=24" alt="${ex.name} 開始肢位"><figcaption>① 開始のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}-start.png?v=25" alt="${ex.name} 開始肢位"><figcaption>① 開始のかたち</figcaption></figure>
            <div class="bm-ex-flow-arrow">${ov.flowLabel?`<span>${ov.flowLabel}</span>`:''}<b>→</b></div>
-           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}.png?v=24" alt="${ex.name} 完成肢位"><figcaption>② 完成のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}.png?v=25" alt="${ex.name} 完成肢位"><figcaption>② 完成のかたち</figcaption></figure>
          </div>`
-      : `<div class="bm-ex-stage"><img src="assets/poses/${imgId}.png?v=24" alt="${ex.name}">${arrow}${pins}</div>`;
+      : `<div class="bm-ex-stage"><img src="assets/poses/${imgId}.png?v=25" alt="${ex.name}">${arrow}${pins}</div>`;
     return `<div class="bm-ex bm-ex-fig">
       ${head}${target}
       ${stage}
