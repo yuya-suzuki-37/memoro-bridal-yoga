@@ -6,9 +6,9 @@
 import { DB_PERSONAL } from './db-personal.js';
 import { DB_PILATES } from './db-pilates.js';
 import { DB_SEITAI } from './db-seitai.js';
-import { DB_YOGA } from './db-yoga.js?v=26';
-import { DB_YOGA_BRIDAL } from './db-yoga-bridal.js?v=26';
-import { evidenceScore } from './evidence-map.js?v=26';
+import { DB_YOGA } from './db-yoga.js?v=27';
+import { DB_YOGA_BRIDAL } from './db-yoga-bridal.js?v=27';
+import { evidenceScore } from './evidence-map.js?v=27';
 
 // ヨガ主軸: ヨガ(花嫁向け拡充→標準の順)を先頭に置き、同条件ならヨガが優先採用される。
 // personal/pilates/seitai は、ヨガで埋まらない部位の「補完」に回る。
