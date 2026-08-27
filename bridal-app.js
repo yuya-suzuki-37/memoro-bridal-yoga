@@ -3,10 +3,10 @@
 // 問診 → プロファイル → 30日プラン生成 → カレンダー → 日別詳細
 // ===================================================================
 import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor, SLEEP_CARE,
-         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=28';
-import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=28';
-import { AREA_LABEL } from './bridal-engine.js?v=28';
-import { EVIDENCE } from './evidence-map.js?v=28';
+         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=29';
+import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=29';
+import { AREA_LABEL } from './bridal-engine.js?v=29';
+import { EVIDENCE } from './evidence-map.js?v=29';
 
 const $ = s => document.querySelector(s);
 const PROGRESS_KEY = 'memoro-bridal-progress-v1';
@@ -183,7 +183,7 @@ function renderPlan(profile, days, pregnant){
   $('#bm-result-body').innerHTML = `
     <section class="result-hero">
       <div class="rh-visual">
-        <img src="assets/result-visual.png?v=28" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
+        <img src="assets/result-visual.png?v=29" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
         <span class="rh-script">your yoga care</span>
       </div>
       <div class="rh-body">
@@ -241,7 +241,9 @@ const POSE_PHOTOS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_fa
   'yg_corpse','yg_child_pose','yg_legs_up_wall','yg_supine_butterfly','yg_boat_pose','yg_revolved_triangle','yg_sphinx','yg_br_wall_angel',
   'yg_chair','yg_tree','yg_wide_squat','yg_forward_fold_std','yg_br_twist_boat','yg_br_side_plank_twist',
   'yg_seated_fold_y','yg_one_leg_fold','yg_half_pigeon','yg_hero','yg_lotus_prep',
-  'yg_locust_pose','yg_cobra','yg_savasana_with_count','yg_legs_wall_y','yg_side_plank_yoga','st_belly_breath','st_box_breath','st_478_breath','st_rib_breath','pl_relaxation_breath']);
+  'yg_locust_pose','yg_cobra','yg_savasana_with_count','yg_legs_wall_y','yg_side_plank_yoga','st_belly_breath','st_box_breath','st_478_breath','st_rib_breath','pl_relaxation_breath',
+  'yg_seated_forward_fold','yg_head_to_knee','yg_chair_pose','yg_standing_forward_fold','st_sphinx_release','yg_hero_pose','st_lying_relax','st_seated_fold','st_legs_up_wall','st_pigeon',
+  'yg_br_chaturanga','yg_lunge_low','yg_wide_legged_fold','yg_seated_side','yg_spinal_twist','yg_seated_wide_legs','yg_butterfly_pose','yg_supported_bridge','st_butterfly','yg_butterfly_yoga']);
 // 瞑想系は姿勢が共通・呼吸の派生は本家と同姿勢→共通画像を共有して枚数を節約（idごとに別画像を作らない）
 const POSE_IMG_MAP = {
   yg_alternate_nostril:'yg_nadi_shodhana', yg_kapalabhati:'yg_kapalbhati', yg_ujjayi_long:'yg_ujjayi',
@@ -249,6 +251,9 @@ const POSE_IMG_MAP = {
   yg_loving_kindness:'yg_meditation', yg_mantra_meditation:'yg_meditation', yg_pratipaksha:'yg_meditation',
   yg_locust_pose:'yg_locust', yg_cobra:'yg_br_cobra_decolte', yg_savasana_with_count:'yg_corpse', yg_legs_wall_y:'yg_legs_up_wall', yg_side_plank_yoga:'yg_br_side_plank',
   st_belly_breath:'yg_ujjayi', st_box_breath:'yg_ujjayi', st_478_breath:'yg_ujjayi', st_rib_breath:'yg_ujjayi', pl_relaxation_breath:'yg_ujjayi',
+  yg_seated_forward_fold:'yg_seated_fold_y', yg_head_to_knee:'yg_one_leg_fold', yg_chair_pose:'yg_chair', yg_standing_forward_fold:'yg_forward_fold_std', st_sphinx_release:'yg_sphinx',
+  yg_hero_pose:'yg_hero', st_lying_relax:'yg_corpse', st_seated_fold:'yg_seated_fold_y', st_legs_up_wall:'yg_legs_up_wall', st_pigeon:'yg_half_pigeon',
+  st_butterfly:'yg_butterfly_pose', yg_butterfly_yoga:'yg_butterfly_pose',
 };
 // 開始肢位の写真({id}-start.png)があるポーズ。開始→完成の2枚で動きの流れを見せる（上司FB「動きが分からない」対応）
 const POSE_STARTS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog','yg_br_reverse_plank','yg_br_dolphin_plank','yg_dolphin_pose','yg_br_revolved_chair','yg_half_lord_of_fishes']);
@@ -280,6 +285,16 @@ const POSE_OVERLAY = {
   yg_half_pigeon:         { target:['股関節','お尻'] },
   yg_hero:                { target:['太もも前','美姿勢'] },
   yg_lotus_prep:          { target:['股関節','美姿勢'] },
+  yg_br_chaturanga:       { target:['二の腕','体幹'] },
+  yg_lunge_low:           { target:['股関節','もも前','デコルテ'] },
+  yg_wide_legged_fold:    { target:['もも裏','内もも'] },
+  yg_seated_side:         { target:['くびれ','脇腹'] },
+  yg_spinal_twist:        { target:['背中','くびれ'] },
+  yg_seated_wide_legs:    { target:['内もも','もも裏'] },
+  yg_butterfly_pose:      { target:['股関節','内もも'] },
+  yg_supported_bridge:    { target:['お尻','もも裏'] },
+  st_butterfly:           { target:['股関節','内もも'] },
+  yg_butterfly_yoga:      { target:['股関節','内もも'] },
 };
 
 function exerciseCard(ex, phase, taper){
@@ -308,11 +323,11 @@ function exerciseCard(ex, phase, taper){
     const cues = ex.cues ? `<div class="bm-fig-cues"><div class="bm-fig-cue ok"><h6>◎ ポイント</h6><p>${ex.cues.do||''}</p></div><div class="bm-fig-cue ng"><h6>✕ 注意</h6><p>${ex.cues.dont||''}</p></div></div>` : '';
     const stage = POSE_STARTS.has(ex.id)
       ? `<div class="bm-ex-flow">
-           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}-start.png?v=28" alt="${ex.name} 開始肢位"><figcaption>① 開始のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}-start.png?v=29" alt="${ex.name} 開始肢位"><figcaption>① 開始のかたち</figcaption></figure>
            <div class="bm-ex-flow-arrow">${ov.flowLabel?`<span>${ov.flowLabel}</span>`:''}<b>→</b></div>
-           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}.png?v=28" alt="${ex.name} 完成肢位"><figcaption>② 完成のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}.png?v=29" alt="${ex.name} 完成肢位"><figcaption>② 完成のかたち</figcaption></figure>
          </div>`
-      : `<div class="bm-ex-stage"><img src="assets/poses/${imgId}.png?v=28" alt="${ex.name}">${arrow}${pins}</div>`;
+      : `<div class="bm-ex-stage"><img src="assets/poses/${imgId}.png?v=29" alt="${ex.name}">${arrow}${pins}</div>`;
     return `<div class="bm-ex bm-ex-fig">
       ${head}${target}
       ${stage}
