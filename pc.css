@@ -2,7 +2,7 @@
 
 /* ヒーロー画像（骨格診断用） */
 body.lx .lx-hero-bg{
-  background-image:url('assets/hero-bride.png?v=27') !important;
+  background-image:url('assets/hero-bride.png?v=28') !important;
   background-position:center 18%; background-size:cover; background-repeat:no-repeat;
 }
 /* タイプ別ドレス画像 */
