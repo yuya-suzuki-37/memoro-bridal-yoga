@@ -97,7 +97,7 @@ body.lx .petal-bg{ display:none !important; }
 /* ---------- ヒーロー（kogao統一・分離型：写真上＋クリームキャッチ） ---------- */
 .lx-hero{ position:relative; margin-bottom:6px; }
 .lx-hero-photo{ position:relative; height:54vh; min-height:380px; max-height:580px; overflow:hidden; }
-.lx-hero-bg{ position:absolute; inset:0; background:url('assets/hero-bride.png?v=30') center 18%/cover no-repeat; animation:lx-kenburns 22s ease-out infinite alternate; }
+.lx-hero-bg{ position:absolute; inset:0; background:url('assets/hero-bride.png?v=31') center 18%/cover no-repeat; animation:lx-kenburns 22s ease-out infinite alternate; }
 @keyframes lx-kenburns{ from{ transform:scale(1.03); } to{ transform:scale(1.14); } }
 .lx-hero-photo::after{ content:''; position:absolute; left:0; right:0; bottom:0; height:130px; background:linear-gradient(to bottom,rgba(255,253,248,0),var(--lx-cream-hero)); }
 .lx-hero-logo{ position:absolute; top:24px; left:0; right:0; z-index:2; text-align:center; font-family:var(--lx-serif); font-size:1.2rem; letter-spacing:.34em; text-indent:.34em; color:#fff; text-shadow:0 2px 18px rgba(60,45,30,.55); }

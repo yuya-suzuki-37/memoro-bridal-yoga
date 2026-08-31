@@ -3,10 +3,10 @@
 // 問診 → プロファイル → 30日プラン生成 → カレンダー → 日別詳細
 // ===================================================================
 import { QUESTIONS, buildProfile, planTitle, messageFor, foodFor, SLEEP_CARE,
-         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=30';
-import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=30';
-import { AREA_LABEL } from './bridal-engine.js?v=30';
-import { EVIDENCE } from './evidence-map.js?v=30';
+         DISCLAIMER, PREGNANCY_NOTICE, SAFETY_NOTE, DX_LABEL } from './bridal-data.js?v=31';
+import { build30Day, PHASE_INFO, prescriptionFor } from './bridal-program.js?v=31';
+import { AREA_LABEL } from './bridal-engine.js?v=31';
+import { EVIDENCE } from './evidence-map.js?v=31';
 
 const $ = s => document.querySelector(s);
 const PROGRESS_KEY = 'memoro-bridal-progress-v1';
@@ -183,7 +183,7 @@ function renderPlan(profile, days, pregnant){
   $('#bm-result-body').innerHTML = `
     <section class="result-hero">
       <div class="rh-visual">
-        <img src="assets/result-visual.png?v=30" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
+        <img src="assets/result-visual.png?v=31" alt="" onerror="this.closest('.rh-visual').classList.add('no-img')">
         <span class="rh-script">your yoga care</span>
       </div>
       <div class="rh-body">
@@ -245,7 +245,9 @@ const POSE_PHOTOS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_fa
   'yg_seated_forward_fold','yg_head_to_knee','yg_chair_pose','yg_standing_forward_fold','st_sphinx_release','yg_hero_pose','st_lying_relax','st_seated_fold','st_legs_up_wall','st_pigeon',
   'yg_br_chaturanga','yg_lunge_low','yg_wide_legged_fold','yg_seated_side','yg_spinal_twist','yg_seated_wide_legs','yg_butterfly_pose','yg_supported_bridge','st_butterfly','yg_butterfly_yoga',
   'yg_crow_pose','yg_compass','yg_camel_pose','yg_bow_pose','yg_fish_pose','yg_lizard_pose','yg_br_gate','yg_rag_doll','yg_plow_pose','yg_br_standing_backbend','yg_warrior_reverse','yg_extended_side_angle','yg_br_mermaid','yg_br_reverse_prayer','st_hip_flexor','st_9090_hip','st_supine_figure4','st_neck_lateral','yg_br_thread_needle',
-  'st_supine_twist','st_reverse_prayer','st_thread_needle','st_lizard']);
+  'st_supine_twist','st_reverse_prayer','st_thread_needle','st_lizard',
+  'yg_reclining_hero','st_cat_cow','st_shoulder_circles','yg_frog_pose','st_neck_rotation','st_low_back_rocker','yg_br_table_top','st_wrist_extension','st_outer_hip_stretch','st_hip_circle','st_happy_baby','st_qlrunner','st_calf_stretch','st_quad_stretch','st_inner_thigh_stretch','st_psoas_stretch',
+  'st_frog','st_hip_circles','st_shoulder_roll','st_lat_stretch','st_eagle_arm']);
 // 瞑想系は姿勢が共通・呼吸の派生は本家と同姿勢→共通画像を共有して枚数を節約（idごとに別画像を作らない）
 const POSE_IMG_MAP = {
   yg_alternate_nostril:'yg_nadi_shodhana', yg_kapalabhati:'yg_kapalbhati', yg_ujjayi_long:'yg_ujjayi',
@@ -257,6 +259,7 @@ const POSE_IMG_MAP = {
   yg_hero_pose:'yg_hero', st_lying_relax:'yg_corpse', st_seated_fold:'yg_seated_fold_y', st_legs_up_wall:'yg_legs_up_wall', st_pigeon:'yg_half_pigeon',
   st_butterfly:'yg_butterfly_pose', yg_butterfly_yoga:'yg_butterfly_pose',
   st_supine_twist:'yg_spinal_twist', st_reverse_prayer:'yg_br_reverse_prayer', st_thread_needle:'yg_br_thread_needle', st_lizard:'yg_lizard_pose',
+  st_frog:'yg_frog_pose', st_hip_circles:'st_hip_circle',
 };
 // 開始肢位の写真({id}-start.png)があるポーズ。開始→完成の2枚で動きの流れを見せる（上司FB「動きが分からない」対応）
 const POSE_STARTS = new Set(['yg_br_cobra_decolte','yg_br_side_plank','yg_cow_face','yg_seated_twist_y','yg_locust','yg_br_high_plank','yg_half_boat','yg_upward_dog','yg_br_reverse_plank','yg_br_dolphin_plank','yg_dolphin_pose','yg_br_revolved_chair','yg_half_lord_of_fishes']);
@@ -317,6 +320,25 @@ const POSE_OVERLAY = {
   st_supine_figure4:      { target:['お尻','股関節'] },
   st_neck_lateral:        { target:['首','肩'] },
   yg_br_thread_needle:    { target:['肩甲骨','背中'] },
+  yg_reclining_hero:      { target:['もも前','股関節前'] },
+  st_cat_cow:             { target:['背中','体幹'] },
+  st_shoulder_circles:    { target:['肩','肩甲骨'] },
+  yg_frog_pose:           { target:['内もも','股関節'] },
+  st_neck_rotation:       { target:['首','肩'] },
+  st_low_back_rocker:     { target:['腰','お尻'] },
+  yg_br_table_top:        { target:['デコルテ','二の腕','体幹'] },
+  st_wrist_extension:     { target:['手首','前腕'] },
+  st_outer_hip_stretch:   { target:['お尻','股関節'] },
+  st_hip_circle:          { target:['股関節','お尻'] },
+  st_happy_baby:          { target:['股関節','内もも'] },
+  st_qlrunner:            { target:['脇腹','腰'] },
+  st_calf_stretch:        { target:['ふくらはぎ'] },
+  st_quad_stretch:        { target:['もも前'] },
+  st_inner_thigh_stretch: { target:['内もも'] },
+  st_psoas_stretch:       { target:['股関節前','もも前'] },
+  st_shoulder_roll:       { target:['肩','肩甲骨'] },
+  st_lat_stretch:         { target:['脇腹','背中'] },
+  st_eagle_arm:           { target:['肩甲骨','肩'] },
 };
 
 function exerciseCard(ex, phase, taper){
@@ -345,11 +367,11 @@ function exerciseCard(ex, phase, taper){
     const cues = ex.cues ? `<div class="bm-fig-cues"><div class="bm-fig-cue ok"><h6>◎ ポイント</h6><p>${ex.cues.do||''}</p></div><div class="bm-fig-cue ng"><h6>✕ 注意</h6><p>${ex.cues.dont||''}</p></div></div>` : '';
     const stage = POSE_STARTS.has(ex.id)
       ? `<div class="bm-ex-flow">
-           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}-start.png?v=30" alt="${ex.name} 開始肢位"><figcaption>① 開始のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}-start.png?v=31" alt="${ex.name} 開始肢位"><figcaption>① 開始のかたち</figcaption></figure>
            <div class="bm-ex-flow-arrow">${ov.flowLabel?`<span>${ov.flowLabel}</span>`:''}<b>→</b></div>
-           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}.png?v=30" alt="${ex.name} 完成肢位"><figcaption>② 完成のかたち</figcaption></figure>
+           <figure class="bm-ex-shot"><img src="assets/poses/${imgId}.png?v=31" alt="${ex.name} 完成肢位"><figcaption>② 完成のかたち</figcaption></figure>
          </div>`
-      : `<div class="bm-ex-stage"><img src="assets/poses/${imgId}.png?v=30" alt="${ex.name}">${arrow}${pins}</div>`;
+      : `<div class="bm-ex-stage"><img src="assets/poses/${imgId}.png?v=31" alt="${ex.name}">${arrow}${pins}</div>`;
     return `<div class="bm-ex bm-ex-fig">
       ${head}${target}
       ${stage}
